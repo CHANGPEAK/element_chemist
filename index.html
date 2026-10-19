@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f4e5f">
+<title>個人 AI 工作桌面</title>
+<style>
+:root{
+  --bg:#f3f6f8;--panel:#ffffff;--text:#17232b;--muted:#647480;
+  --primary:#1f6476;--primary2:#dceff2;--border:#dce4e8;
+  --shadow:0 8px 24px rgba(24,48,60,.08);--danger:#a83232;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;line-height:1.5}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+header{background:linear-gradient(135deg,#194d5d,#287b86);color:#fff;padding:24px max(18px,calc((100vw - 1120px)/2));}
+.header-inner{max-width:1120px;margin:auto}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:15px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:25px}
+h1{font-size:clamp(1.35rem,3vw,2rem);margin:0}
+.subtitle{margin:6px 0 0;color:#dceff2;font-size:.95rem}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+.header-actions button{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff}
+main{max-width:1120px;margin:22px auto;padding:0 16px 48px}
+.toolbar{display:grid;grid-template-columns:minmax(180px,1fr) 190px auto;gap:10px;margin-bottom:16px}
+input,select,textarea{width:100%;border:1px solid var(--border);border-radius:11px;padding:11px 12px;background:#fff;color:var(--text);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(31,100,118,.12)}
+.btn{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:11px;padding:10px 14px;font-weight:600}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.danger{color:var(--danger);border-color:#e8caca}
+.btn.small{font-size:.86rem;padding:7px 10px}
+.btn:active{transform:translateY(1px)}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:6px 12px;color:var(--muted);font-size:.88rem}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 12px}
+.section-head h2{font-size:1.1rem;margin:0}
+.apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.app-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:190px;position:relative}
+.app-card:hover{border-color:#aacbd1}
+.card-top{display:flex;align-items:flex-start;gap:12px}
+.app-icon{width:48px;height:48px;flex:0 0 48px;border-radius:14px;background:var(--primary2);display:grid;place-items:center;font-size:25px}
+.app-title{font-weight:750;font-size:1.02rem;overflow-wrap:anywhere}
+.app-category{font-size:.8rem;color:var(--muted);margin-top:2px}
+.app-desc{color:var(--muted);font-size:.9rem;margin:12px 0 16px;flex:1;overflow-wrap:anywhere}
+.card-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.card-actions .launch{flex:1;min-width:90px}
+.star{border:0;background:transparent;font-size:1.3rem;color:#a8b3b8;padding:0 3px}
+.star.active{color:#d89b1d}
+.empty{border:1px dashed #bdcbd1;background:rgba(255,255,255,.65);border-radius:16px;padding:32px 18px;text-align:center;color:var(--muted);grid-column:1/-1}
+footer{max-width:1120px;margin:0 auto;padding:0 16px 28px;color:var(--muted);font-size:.83rem}
+dialog{border:0;border-radius:18px;padding:0;width:min(560px,calc(100vw - 24px));max-height:90vh;box-shadow:0 25px 80px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(16,31,39,.48);backdrop-filter:blur(3px)}
+.modal-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.modal-head h2{font-size:1.15rem;margin:0}
+.modal-body{padding:18px 20px;overflow:auto;max-height:calc(90vh - 135px)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:.88rem;font-weight:650}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.hint{font-size:.82rem;color:var(--muted);margin:6px 0 0}
+.notice{background:#fff8e7;border:1px solid #f0dfb4;border-radius:12px;padding:12px 14px;color:#6c551e;font-size:.88rem;margin:16px 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#183c46;color:#fff;padding:11px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:10;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.hidden{display:none!important}
+@media(max-width:760px){.apps{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}}
+@media(max-width:500px){header{padding:20px 16px}.apps{grid-template-columns:1fr}.app-card{min-height:unset}.toolbar{grid-template-columns:1fr}.toolbar input{grid-column:auto}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.header-actions{width:100%}.header-actions button{flex:1}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="topline">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">⌘</div>
+        <div>
+          <h1>個人 AI 工作桌面</h1>
+          <p class="subtitle">把常用的 Google 服務與 AI 生成工具，整理成自己的工作入口。</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="addTop">＋ 新增工具</button>
+        <button class="btn" id="exportTop">匯出備份</button>
+        <button class="btn" id="importTop">匯入備份</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="notice">
+    <strong>使用提示：</strong>此頁面是獨立 HTML 工作桌面，工具清單保存在目前瀏覽器。它不會自動同步到其他裝置；請使用「匯出備份／匯入備份」搬移清單。若要跨裝置自動同步，之後可再接 Google Sheets 或 Firebase。
+  </div>
+
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="搜尋工具名稱、描述或分類…" aria-label="搜尋工具">
+    <select id="categoryFilter" aria-label="依分類篩選">
+      <option value="全部">所有分類</option>
+    </select>
+    <button class="btn primary" id="addMain">＋ 新增應用程式</button>
+  </div>
+
+  <div class="stats">
+    <span class="stat" id="countStat">0 個工具</span>
+    <span class="stat" id="favStat">0 個收藏</span>
+    <span class="stat">本機保存 · 可離線開啟</span>
+  </div>
+
+  <section id="favoritesSection" class="hidden">
+    <div class="section-head"><h2>★ 我的收藏</h2></div>
+    <div class="apps" id="favoritesGrid"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2 id="allTitle">所有應用程式</h2>
+      <button class="btn small" id="resetBtn">恢復範例工具</button>
+    </div>
+    <div class="apps" id="appsGrid"></div>
+  </section>
+</main>
+
+<footer>
+  <p>建議：將此檔案保存為 <strong>index.html</strong>。若要作為可離線使用的主畫面網頁 App，需再部署到支援 HTTPS 與 Service Worker 的網站空間；直接以本機檔案開啟時，瀏覽器的部分功能可能受限。</p>
+  <p>安全提醒：請勿把密碼、API 金鑰、學生個資或私人資料直接寫入此首頁。首頁只保存工具名稱、網址、分類與說明。</p>
+</footer>
+
+<dialog id="appDialog">
+  <form id="appForm">
+    <div class="modal-head">
+      <h2 id="dialogTitle">新增應用程式</h2>
+      <button type="button" class="btn small" id="closeDialog">關閉</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field">
+          <label for="appName">工具名稱 *</label>
+          <input id="appName" required maxlength="80" placeholder="例如：課程報告管理">
+        </div>
+        <div class="field">
+          <label for="appIcon">圖示 Emoji</label>
+          <input id="appIcon" maxlength="8" value="🧩" placeholder="例如：🧪">
+        </div>
+        <div class="field">
+          <label for="appCategory">分類</label>
+          <input id="appCategory" list="categoryOptions" maxlength="40" value="個人工具" placeholder="例如：教學工具">
+          <datalist id="categoryOptions">
+            <option value="Google 服務"><option value="教學工具"><option value="行政管理"><option value="研究與實驗"><option value="個人工具"><option value="硬體控制">
+          </datalist>
+        </div>
+        <div class="field">
+          <label for="appUrl">應用程式網址 *</label>
+          <input id="appUrl" type="url" required placeholder="https://...">
+        </div>
+        <div class="field full">
+          <label for="appDesc">簡短說明</label>
+          <textarea id="appDesc" rows="3" maxlength="300" placeholder="這個工具可以做什麼？"></textarea>
+        </div>
+      </div>
+      <p class="hint">可填入 GAS 部署網址、GitHub Pages 網址、其他網站網址，或 ESP32 控制頁面網址。網址需以 http:// 或 https:// 開頭。</p>
+      <input type="hidden" id="appId">
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" id="cancelDialog">取消</button>
+      <button type="submit" class="btn primary">儲存工具</button>
+    </div>
+  </form>
+</dialog>
+
+<input type="file" id="importFile" accept=".json,application/json" class="hidden">
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const STORAGE_KEY = 'aiWorkspaceApps_v1';
+  const defaults = [
+    {id:'google-drive',name:'Google Drive',icon:'📁',category:'Google 服務',url:'https://drive.google.com/',desc:'雲端檔案、教材、照片與文件管理。',favorite:true},
+    {id:'google-docs',name:'Google 文件',icon:'📝',category:'Google 服務',url:'https://docs.google.com/document/',desc:'撰寫教案、行政文件與報告。',favorite:false},
+    {id:'google-sheets',name:'Google 試算表',icon:'📊',category:'Google 服務',url:'https://sheets.google.com/',desc:'整理資料、計算與製作表格。',favorite:false},
+    {id:'google-calendar',name:'Google 日曆',icon:'🗓️',category:'Google 服務',url:'https://calendar.google.com/',desc:'管理課務、行程與提醒。',favorite:false},
+    {id:'admin-tool',name:'行政工作管理',icon:'📋',category:'行政管理',url:'https://example.com/',desc:'將此範例網址替換成你自己的 GAS 或網頁工具。',favorite:false},
+    {id:'teaching-tool',name:'教學工具箱',icon:'🎓',category:'教學工具',url:'https://example.com/',desc:'放置題庫、座位表、答題統計與互動教材。',favorite:false},
+    {id:'lab-tool',name:'研究與實驗紀錄',icon:'🧪',category:'研究與實驗',url:'https://example.com/',desc:'放置實驗紀錄、數據計算與圖表工具。',favorite:false},
+    {id:'esp32-tool',name:'ESP32 控制面板',icon:'⚙️',category:'硬體控制',url:'http://esp32.local/',desc:'預留給未來的區域網路硬體控制介面。',favorite:false}
+  ];
+  let apps = loadApps();
+  const $ = id => document.getElementById(id);
+  const grid = $('appsGrid'), favGrid = $('favoritesGrid');
+  let toastTimer;
+
+  function loadApps(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed)) return parsed;}
+    }catch(e){}
+    return defaults.map(x=>({...x}));
+  }
+  function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(apps));}catch(e){notify('無法保存：瀏覽器儲存空間可能不足。');}}
+  function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function safeUrl(url){
+    try{const u=new URL(url);return ['http:','https:'].includes(u.protocol)?u.href:null;}catch(e){return null;}
+  }
+  function notify(msg){
+    const t=$('toast');t.textContent=msg;t.classList.add('show');
+    clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+  }
+  function updateCategories(){
+    const select=$('categoryFilter'), current=select.value;
+    const cats=[...new Set(apps.map(a=>a.category||'未分類'))].sort((a,b)=>a.localeCompare(b,'zh-Hant'));
+    select.innerHTML='<option value="全部">所有分類</option>'+cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    select.value=cats.includes(current)?current:'全部';
+    $('categoryOptions').innerHTML=['Google 服務','教學工具','行政管理','研究與實驗','個人工具','硬體控制',...cats].filter((x,i,a)=>a.indexOf(x)===i).map(c=>`<option value="${escapeHtml(c)}"></option>`).join('');
+  }
+  function card(a){
+    const url=safeUrl(a.url);
+    return `<article class="app-card">
+      <div class="card-top">
+        <div class="app-icon">${escapeHtml(a.icon||'🧩')}</div>
+        <div style="flex:1;min-width:0">
+          <div class="app-title">${escapeHtml(a.name)}</div>
+          <div class="app-category">${escapeHtml(a.category||'未分類')}</div>
+        </div>
+        <button class="star ${a.favorite?'active':''}" data-action="favorite" data-id="${escapeHtml(a.id)}" aria-label="${a.favorite?'取消收藏':'加入收藏'}" title="${a.favorite?'取消收藏':'加入收藏'}">${a.favorite?'★':'☆'}</button>
+      </div>
+      <p class="app-desc">${escapeHtml(a.desc||'尚未新增說明。')}</p>
+      <div class="card-actions">
+        ${url?`<button class="btn primary launch" data-action="open" data-id="${escapeHtml(a.id)}">開啟工具 ↗</button>`:`<button class="btn launch" disabled>網址無效</button>`}
+        <button class="btn small" data-action="edit" data-id="${escapeHtml(a.id)}">編輯</button>
+        <button class="btn small danger" data-action="delete" data-id="${escapeHtml(a.id)}">刪除</button>
+      </div>
+      ${url && url.includes('example.com')?'<p class="hint">這是範例網址，請編輯並換成實際網址。</p>':''}
+    </article>`;
+  }
+  function render(){
+    updateCategories();
+    const query=$('search').value.trim().toLowerCase(), cat=$('categoryFilter').value;
+    const matches=apps.filter(a=>{
+      const hay=[a.name,a.desc,a.category,a.url].join(' ').toLowerCase();
+      return (!query||hay.includes(query))&&(cat==='全部'||(a.category||'未分類')===cat);
+    });
+    const favorites=matches.filter(a=>a.favorite);
+    $('countStat').textContent=`${apps.length} 個工具`;
+    $('favStat').textContent=`${apps.filter(a=>a.favorite).length} 個收藏`;
+    $('favoritesSection').classList.toggle('hidden',favorites.length===0||query!==''||cat!=='全部');
+    favGrid.innerHTML=favorites.map(card).join('');
+    grid.innerHTML=matches.length?matches.map(card).join(''):'<div class="empty">找不到符合條件的工具。<br>可以調整搜尋條件，或新增一個應用程式。</div>';
+    $('allTitle').textContent=query||cat!=='全部'?'搜尋結果':'所有應用程式';
+  }
+  function openForm(app=null){
+    $('appForm').reset();
+    $('dialogTitle').textContent=app?'編輯應用程式':'新增應用程式';
+    $('appId').value=app?.id||'';
+    $('appName').value=app?.name||'';
+    $('appIcon').value=app?.icon||'🧩';
+    $('appCategory').value=app?.category||'個人工具';
+    $('appUrl').value=app?.url||'';
+    $('appDesc').value=app?.desc||'';
+    $('appDialog').showModal();
+    setTimeout(()=>$('appName').focus(),80);
+  }
+  function addApp(){
+    const id=$('appId').value;
+    const name=$('appName').value.trim(), icon=$('appIcon').value.trim()||'🧩';
+    const category=$('appCategory').value.trim()||'未分類', url=$('appUrl').value.trim();
+    const desc=$('appDesc').value.trim();
+    if(!name||!safeUrl(url)){notify('請輸入工具名稱與有效的 http／https 網址。');return;}
+    if(id){
+      const i=apps.findIndex(a=>a.id===id);
+      if(i>=0) apps[i]={...apps[i],name,icon,category,url,desc};
+    }else{
+      apps.push({id:'app-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),name,icon,category,url,desc,favorite:false});
+    }
+    save();render();$('appDialog').close();notify(id?'已更新工具':'已新增工具');
+  }
+  function exportData(){
+    const blob=new Blob([JSON.stringify({format:'ai-workspace-backup',version:1,exportedAt:new Date().toISOString(),apps},null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='ai-workspace-backup.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    notify('已匯出備份檔');
+  }
+  function importData(file){
+    const reader=new FileReader();
+    reader.onload=()=>{
+      try{
+        const data=JSON.parse(reader.result);
+        const incoming=Array.isArray(data)?data:data.apps;
+        if(!Array.isArray(incoming)) throw new Error('格式錯誤');
+        const clean=incoming.map((a,i)=>{
+          if(!a||typeof a.name!=='string'||typeof a.url!=='string'||!safeUrl(a.url)) throw new Error('資料中有不合法的名稱或網址');
+          return {id:String(a.id||('import-'+Date.now()+'-'+i)),name:a.name.slice(0,80),icon:String(a.icon||'🧩').slice(0,8),category:String(a.category||'未分類').slice(0,40),url:a.url,desc:String(a.desc||'').slice(0,300),favorite:Boolean(a.favorite)};
+        });
+        if(!confirm(`備份內有 ${clean.length} 個工具。按「確定」會以備份內容取代目前清單。`)) return;
+        apps=clean;save();render();notify('匯入完成');
+      }catch(e){notify('匯入失敗：'+(e.message||'檔案格式不正確'));}
+      $('importFile').value='';
+    };
+    reader.readAsText(file);
+  }
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-action]');if(!b)return;
+    const a=apps.find(x=>x.id===b.dataset.id);if(!a)return;
+    switch(b.dataset.action){
+      case 'open':{const u=safeUrl(a.url);if(u)window.open(u,'_blank','noopener,noreferrer');else notify('網址無效');break;}
+      case 'edit':openForm(a);break;
+      case 'favorite':a.favorite=!a.favorite;save();render();break;
+      case 'delete':if(confirm(`確定刪除「${a.name}」？此操作不會刪除該工具網站，只會移除首頁捷徑。`)){apps=apps.filter(x=>x.id!==a.id);save();render();notify('已刪除捷徑');}break;
+    }
+  });
+  $('addTop').addEventListener('click',()=>openForm());
+  $('addMain').addEventListener('click',()=>openForm());
+  $('closeDialog').addEventListener('click',()=>$('appDialog').close());
+  $('cancelDialog').addEventListener('click',()=>$('appDialog').close());
+  $('appForm').addEventListener('submit',e=>{e.preventDefault();addApp();});
+  $('search').addEventListener('input',render);
+  $('categoryFilter').addEventListener('change',render);
+  $('exportTop').addEventListener('click',exportData);
+  $('importTop').addEventListener('click',()=>$('importFile').click());
+  $('importFile').addEventListener('change',e=>{if(e.target.files?.[0])importData(e.target.files[0]);});
+  $('resetBtn').addEventListener('click',()=>{
+    if(confirm('確定以預設範例工具取代目前清單？建議先匯出備份。')){apps=defaults.map(x=>({...x}));save();render();notify('已恢復範例工具');}
+  });
+  render();
+})();
+</script>
+</body>
+</html>
