@@ -1,0 +1,436 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>化學合成實驗室・煉金術師工坊</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;--bg:#120d1a;--fg:#efe6cf;--card:#1d1626;--bd:#4d3f66;--ac:#7fe0d4;--ca:#2a6479;--cb:#7c501b;--ok:#86ffa9;--bad:#ff9a8f;--mut:#b9acd4;--bowl:polygon(0 0,100% 0,100% 38%,97% 38%,97% 60%,92% 60%,92% 78%,85% 78%,85% 90%,76% 90%,76% 100%,24% 100%,24% 90%,15% 90%,15% 78%,8% 78%,8% 60%,3% 60%,3% 38%,0 38%)}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Noto Sans TC","PingFang TC",sans-serif;padding:10px}
+h1{font-size:18px;margin:0 0 8px}h2{font-size:15px;margin:0 0 6px}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--fg);border-radius:8px;padding:6px 12px;cursor:pointer}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px;margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+label{display:inline-flex;gap:4px;align-items:center}
+.scroll{overflow-x:auto;padding-bottom:4px}
+.grid{display:grid;grid-template-columns:repeat(18,minmax(40px,1fr));grid-template-rows:auto repeat(7,auto) 10px repeat(2,auto);gap:2px;min-width:760px}
+.c{border:1px solid var(--bd);border-radius:5px;text-align:center;font-size:10px;line-height:1.2;padding:2px 1px;min-height:46px;display:flex;flex-direction:column;justify-content:center;user-select:none;-webkit-user-select:none;cursor:pointer;overflow:hidden}
+.c b{font-size:14px}.c.a{background:var(--ca)}.c.b{background:var(--cb)}
+.c.off{filter:grayscale(1);opacity:.45}#game .c.off{cursor:not-allowed}
+.c.ph{background:transparent;border-style:dashed;color:var(--mut);cursor:default}.gh{text-align:center;font-size:11px;font-weight:700;color:var(--mut);align-self:end}
+.oxs{max-height:65vh;overflow:auto}#oxt{width:100%;border-collapse:collapse}#oxt td,#oxt th{border-bottom:1px solid var(--bd);padding:3px 6px;text-align:left}#oxt input{width:100%;font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px;padding:3px 6px}#oxt tr.mod td{background:var(--ca)}
+#zone{min-height:74px;border:2px dashed var(--ac);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#zone.hot{background:var(--ca)}#zone .hint{color:var(--mut)}
+.chip{border:1px solid var(--bd);background:var(--card);border-radius:8px;padding:4px 8px;user-select:none;-webkit-user-select:none;cursor:pointer}
+.chip.p{background:var(--cb)}.chip.c2{background:var(--ca)}
+.zi{display:inline-flex;gap:4px;align-items:center;border:1px solid var(--bd);background:var(--card);border-radius:8px;padding:3px 8px}
+.zi span{cursor:pointer;color:var(--bad)}
+.ghost{position:fixed;pointer-events:none;z-index:9;padding:6px 10px;border-radius:8px;background:var(--ac);color:#fff;font-weight:700;transform:translate(-50%,-50%)}
+.res{margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--bd)}
+.res.ok{border-color:var(--ok)}.res.bad{border-color:var(--bad);color:var(--bad)}
+.fm{font-size:24px;font-weight:700;color:var(--ok)}.ex{font-size:13px;color:var(--mut)}
+.pc{fill:var(--ca);stroke:var(--ac);stroke-width:1.5;stroke-linejoin:round}.pa{fill:var(--cb);stroke:#d9822b;stroke-width:1.5;stroke-linejoin:round}.pn{fill:var(--card);stroke:var(--mut);stroke-dasharray:4 3;stroke-width:1.5}
+.arow{transition:transform 1.1s cubic-bezier(.34,1.3,.5,1)}.res svg{color:var(--fg)}.zt{cursor:pointer;line-height:0}.zt svg{pointer-events:none;color:var(--fg)}
+.mb{margin-bottom:6px}.m{color:var(--mut);font-size:13px}.hide{display:none}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+html{background:#0b0710}
+body{background:transparent;max-width:1080px;margin:0 auto;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+h1,h2,button,.fm{font-family:"DotGothic16","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+#bg,.fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+#bg{object-fit:cover;image-rendering:pixelated;filter:blur(.7px) saturate(1.2)}
+.fx.vig{background:radial-gradient(ellipse at 50% 45%,transparent 35%,rgba(5,2,10,.78) 100%)}
+.fx.shaft{background:linear-gradient(112deg,transparent 12%,rgba(160,200,255,.14) 22%,rgba(160,200,255,.04) 38%,transparent 52%);mix-blend-mode:screen;animation:sh 7s ease-in-out infinite alternate}
+@keyframes sh{to{opacity:.45}}
+.fx.tsT,.fx.tsB{height:16%;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.fx.tsT{inset:0 0 auto 0;-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
+.fx.tsB{inset:auto 0 0 0;-webkit-mask-image:linear-gradient(transparent,#000);mask-image:linear-gradient(transparent,#000)}
+h1{font-size:22px;letter-spacing:2px;color:#ffe9a8;text-shadow:0 2px 0 #7a3b0f,0 0 16px rgba(255,184,74,.55);display:flex;gap:10px;align-items:center;margin:4px 0 12px}
+h1 small{font-size:12px;color:var(--mut);text-shadow:none;letter-spacing:3px;font-weight:400}
+h2{font-size:16px;letter-spacing:1px;color:#9be8dc;text-shadow:0 0 8px rgba(80,230,210,.4)}
+h2::before{content:"◆ ";color:#ffcf4a}
+.card{background:linear-gradient(#251b31,#1b1424);border:3px solid #0a060f;border-radius:4px;padding:12px;box-shadow:inset 0 0 0 2px #5b4a78,inset 0 0 0 4px #2a1f3a,0 4px 0 #05030a,0 14px 30px rgba(0,0,0,.55)}
+button,.chip{border:2px solid #0a060f;border-radius:3px;background:linear-gradient(#6d4a2a,#4a3019);color:#f6e7c1;text-shadow:0 1px 0 #2e1c0c;box-shadow:inset 0 2px 0 #a07a47,inset 0 -2px 0 #2e1c0c,0 3px 0 #0a060f}
+button:hover{filter:brightness(1.15)}
+button:active{transform:translateY(2px);box-shadow:inset 0 2px 0 #a07a47,inset 0 -2px 0 #2e1c0c,0 1px 0 #0a060f}
+button.on{background:linear-gradient(#2fa196,#1b6560);color:#fff;text-shadow:0 1px 0 #0f3d3a;box-shadow:inset 0 2px 0 #8cf0e3,inset 0 -2px 0 #0f3d3a,0 3px 0 #0a060f,0 0 14px rgba(70,230,210,.45)}
+.c{color:#fbf3dc;text-shadow:0 1px 0 rgba(0,0,0,.55);border:2px solid #0a060f;border-radius:3px;box-shadow:inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.38);transition:transform .1s,filter .1s}
+.c.a{background:linear-gradient(160deg,#35788f,#235468)}
+.c.b{background:linear-gradient(160deg,#96611f,#6b4217)}
+.c.ph{background:transparent;box-shadow:none;border:2px dashed #5b4a78;text-shadow:none}
+#game .c:not(.off):not(.ph):hover{transform:translateY(-3px);filter:brightness(1.25) drop-shadow(0 0 6px rgba(127,224,212,.7));z-index:2}
+.ghost{background:#2f8f86;color:#fff;border:2px solid #0a060f;box-shadow:0 0 14px rgba(127,224,212,.8)}
+.res{background:#120c1a;border:2px solid #4d3f66;border-radius:3px;box-shadow:inset 0 0 0 2px #0a060f}
+.res.ok{border-color:#4fd88a}.res.bad{border-color:#ff8f86}
+.fm{text-shadow:0 0 10px rgba(134,255,169,.5)}
+/* cauldron */
+.caul{position:relative;max-width:660px;margin:70px auto 8px;padding-bottom:58px}
+.caul::after{content:"";position:absolute;left:-6%;right:-6%;top:-20px;bottom:20px;background:radial-gradient(ellipse,var(--gl,rgba(150,200,190,.12)),transparent 68%);z-index:0;pointer-events:none}
+.caul.ok{--gl:rgba(230,205,130,.26)}.caul.bad{--gl:rgba(170,135,200,.26)}
+#steam{position:absolute;left:0;top:-110px;width:100%;height:140px;image-rendering:pixelated;pointer-events:none;z-index:4}
+#fire{position:absolute;left:50%;bottom:0;width:38%;height:70px;transform:translateX(-50%);image-rendering:pixelated;z-index:1}
+.legs i{position:absolute;bottom:14px;width:8%;height:34px;background:linear-gradient(90deg,#3d3549,#17121d);z-index:1;clip-path:polygon(0 0,100% 0,100% 70%,80% 70%,80% 100%,20% 100%,20% 70%,0 70%)}
+.legs i:first-child{left:12%}.legs i:last-child{right:12%}
+.rim{position:relative;z-index:3;height:24px;margin:0 1%;background:linear-gradient(#7a7088 0 4px,#3b3447 4px 12px,#1a1522 12px);clip-path:polygon(0 35%,1.5% 35%,1.5% 0,98.5% 0,98.5% 35%,100% 35%,100% 100%,0 100%)}
+.pot{position:relative;z-index:2;margin:-6px 4% 0;padding:0 9px 10px;background:linear-gradient(90deg,#3d3549,#1a1522 28%,#15101c 72%,#332b3f);clip-path:var(--bowl)}
+.liq{position:relative;overflow:hidden;clip-path:var(--bowl);min-height:190px;background:#15111c}
+#potion{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:.5}
+#zone{position:relative;z-index:1;border:0;border-radius:0;min-height:190px;padding:30px 9% 34px;justify-content:center;align-content:center;gap:4px 8px}
+#zone.hot{background:rgba(200,230,220,.12);box-shadow:inset 0 0 36px rgba(200,230,220,.4)}
+#zone .hint{color:#eafff2;text-shadow:0 1px 0 #04201c,0 0 6px #04201c;text-align:center;max-width:80%;margin:auto}
+.zt{filter:drop-shadow(0 3px 0 rgba(0,0,0,.45))}
+.zt:hover{filter:drop-shadow(0 0 8px rgba(255,255,255,.55))}
+#zone .zt{animation:bob 2.4s ease-in-out infinite}
+#zone .zt:nth-child(2n){animation-delay:-.8s}#zone .zt:nth-child(3n){animation-delay:-1.5s}
+@keyframes bob{50%{transform:translateY(-4px) rotate(.8deg)}}
+@media(prefers-reduced-motion:reduce){#zone .zt,.fx{animation:none!important}}
+#sg .c{cursor:pointer}#sg .c:hover{transform:translateY(-2px);filter:brightness(1.2)}
+#sg .c.off{opacity:.6;filter:grayscale(1) brightness(.65);border:2px dashed #8a7aa8;background:#241c30;text-decoration:line-through}
+#sg .c.off:hover{filter:grayscale(1) brightness(.95)}
+/* nonmetals: H, C N O P S Se, halogens, noble gases */
+.c:is([data-k="e:1"],[data-k="e:2"],[data-k="e:6"],[data-k="e:7"],[data-k="e:8"],[data-k="e:9"],[data-k="e:10"],[data-k="e:15"],[data-k="e:16"],[data-k="e:17"],[data-k="e:18"],[data-k="e:34"],[data-k="e:35"],[data-k="e:36"],[data-k="e:53"],[data-k="e:54"],[data-k="e:85"],[data-k="e:86"],[data-k="e:5"],[data-k="e:14"],[data-k="e:33"],[data-k="e:52"],[data-k="e:117"],[data-k="e:118"],[data-z="1"],[data-z="2"],[data-z="6"],[data-z="7"],[data-z="8"],[data-z="9"],[data-z="10"],[data-z="15"],[data-z="16"],[data-z="17"],[data-z="18"],[data-z="34"],[data-z="35"],[data-z="36"],[data-z="53"],[data-z="54"],[data-z="85"],[data-z="86"],[data-z="5"],[data-z="14"],[data-z="33"],[data-z="52"],[data-z="117"],[data-z="118"]){background:linear-gradient(160deg,#3b7a45,#265030)}
+.cmb{position:absolute;z-index:2;transform-origin:0 0;cursor:pointer}
+.cmb .pz{position:absolute;overflow:visible;color:var(--fg);filter:drop-shadow(0 3px 0 rgba(0,0,0,.45))}
+.cmb.snap .pz{animation:glw .9s ease-out}
+@keyframes glw{0%{filter:brightness(2.2) drop-shadow(0 0 10px #ffe9a0)}100%{filter:drop-shadow(0 3px 0 rgba(0,0,0,.45))}}
+.cap{position:absolute;left:0;right:0;top:8px;z-index:2;text-align:center;pointer-events:none;font-family:"DotGothic16","Noto Sans TC",sans-serif;font-size:22px;color:#fff3c4;text-shadow:0 0 10px rgba(255,214,120,.7),0 2px 0 #3a2a10;opacity:0;transition:opacity .4s}.cap.on{opacity:1}
+#zone.shake .zt{animation:shk .35s 2}@keyframes shk{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+</style></head><body>
+<canvas id="bg"></canvas><div class="fx shaft"></div><div class="fx vig"></div><div class="fx tsT"></div><div class="fx tsB"></div>
+<h1><svg width="28" height="32" viewBox="0 0 14 16" shape-rendering="crispEdges" style="filter:drop-shadow(0 0 6px #3fe0b0)"><rect x="5" y="0" width="4" height="2" fill="#9a6b3a"/><g fill="#cfe8f0"><rect x="5" y="2" width="4" height="4"/><rect x="4" y="6" width="6" height="1"/><rect x="3" y="7" width="8" height="1"/><rect x="2" y="8" width="10" height="1"/><rect x="1" y="9" width="12" height="5"/></g><g fill="#3fe0b0"><rect x="2" y="9" width="10" height="1"/><rect x="1" y="10" width="12" height="4"/></g><rect x="3" y="11" width="1" height="2" fill="#fff"/><rect x="8" y="11" width="1" height="1" fill="#fff"/></svg>化學合成實驗室<small>煉金術師工坊</small></h1>
+<div class="tabs"><button id="tg" class="on">遊戲</button><button id="ts">設定</button><button id="tx">擴充價數</button></div>
+
+<section id="game">
+ <div class="card"><h2>合成區・魔藥大鍋</h2>
+  <div class="caul"><canvas id="steam"></canvas><canvas id="fire"></canvas><div class="legs"><i></i><i></i></div><div class="rim"></div><div class="pot"><div class="liq"><canvas id="potion"></canvas><div id="zone"></div></div></div></div>
+  <div class="row" style="margin-top:8px"><button id="go" class="on">熬煮合成</button><button id="clr">倒空大鍋</button><span class="m">滑鼠可拖曳元素到魔藥大鍋；手機請直接點選元素加入。要幾個原子就加入幾次（例如 MgCl₂ 要 1 個 Mg、2 個 Cl）；點大鍋裡的方塊可移除。</span></div>
+  <div id="res"></div></div>
+ <div class="card"><div class="scroll"><div class="grid" id="gg"></div></div></div>
+ <div class="card hide" id="tray"><h2>原子團／錯離子</h2><div class="row" id="trayc"></div></div>
+</section>
+
+<section id="set" class="hide">
+ <div class="card"><h2>顯示哪些元素</h2>
+  <div class="row mb"><button data-q="A">僅 A 族</button><button data-q="B">僅 B 族</button><button data-q="all">全部</button><button data-q="none">全不選</button></div>
+  <div class="m" style="color:var(--ac)">👆 點下方週期表的任一元素即可開關：亮色＝顯示、灰色虛線＝隱藏。</div></div>
+ <div class="card"><h2>週期表格子顯示文字</h2><div class="row" id="fields"></div>
+  <div class="row" style="margin-top:6px"><span>族別格式：</span><label><input type="radio" name="gm" value="A">1A–8A</label><label><input type="radio" name="gm" value="n">1–18</label></div></div>
+ <div class="card"><h2>離子選項</h2><div class="row">
+  <label><input type="checkbox" id="oc">錯離子（二氨銀、四氨銅）</label>
+  <label><input type="checkbox" id="op">原子團／根（銨根、硫酸根、硝酸根、碳酸根、碳酸氫根、氫氧根、醋酸根…；開啟後可在遊戲頁用元素拼出根）</label></div></div>
+ <div class="card"><div class="scroll"><div class="grid" id="sg"></div></div></div>
+</section>
+
+<section id="oxp" class="hide">
+ <div class="card"><h2>擴充價數</h2>
+  <div class="m mb">為每個元素設定可形成的離子價數（1–8 的整數，多個價數以逗號分隔，例如 2,3；留空代表不形成該種離子）。淡藍底色表示已修改。</div>
+  <div class="row mb" style="padding:8px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)"><b>依族別設定價數範圍：</b><select id="rg" style="font:inherit;padding:5px;border-radius:8px;background:var(--card);color:var(--fg);border:1px solid var(--bd)"></select><label>由 <input type="number" id="rmin" min="-8" max="8" value="-1" style="width:64px;font:inherit"></label><label>到 <input type="number" id="rmax" min="-8" max="8" value="7" style="width:64px;font:inherit"></label><button id="rgo" class="on">套用到該族</button></div>
+  <div class="m mb">負值＝陰離子價數、正值＝陽離子價數，0 會略過。例如 7A 族設 −1～+7，得到陰離子 1 價、陽離子 1～7 價。下方個別元素欄位也可直接輸入範圍，如 1~7。</div>
+  <button id="oxr">全部恢復預設</button>
+  <div class="row" style="margin-top:8px"><button id="oxe">匯出 JSON 檔</button><button id="oxc" hidden></button><button id="oxi" hidden></button><label class="chip">讀入 JSON 檔<input type="file" id="oxf" accept=".json,.txt,application/json,text/plain" hidden></label></div>
+  <textarea id="oxa" hidden rows="5" placeholder="匯出的設定會顯示在這裡；要讀入時請把設定文字貼在這裡再按「讀入」" style="width:100%;margin-top:8px;font:12px monospace;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:6px"></textarea>
+  <div id="oxm" class="m"></div></div>
+ <div class="card oxs"><table id="oxt"></table></div>
+</section>
+
+<script>
+const RAW="H,氫,1.008|He,氦,4.003|Li,鋰,6.94|Be,鈹,9.012|B,硼,10.81|C,碳,12.01|N,氮,14.01|O,氧,16.00|F,氟,19.00|Ne,氖,20.18|Na,鈉,22.99|Mg,鎂,24.31|Al,鋁,26.98|Si,矽,28.09|P,磷,30.97|S,硫,32.06|Cl,氯,35.45|Ar,氬,39.95|K,鉀,39.10|Ca,鈣,40.08|Sc,鈧,44.96|Ti,鈦,47.87|V,釩,50.94|Cr,鉻,52.00|Mn,錳,54.94|Fe,鐵,55.85|Co,鈷,58.93|Ni,鎳,58.69|Cu,銅,63.55|Zn,鋅,65.38|Ga,鎵,69.72|Ge,鍺,72.63|As,砷,74.92|Se,硒,78.97|Br,溴,79.90|Kr,氪,83.80|Rb,銣,85.47|Sr,鍶,87.62|Y,釔,88.91|Zr,鋯,91.22|Nb,鈮,92.91|Mo,鉬,95.95|Tc,鎝,98|Ru,釕,101.1|Rh,銠,102.9|Pd,鈀,106.4|Ag,銀,107.9|Cd,鎘,112.4|In,銦,114.8|Sn,錫,118.7|Sb,銻,121.8|Te,碲,127.6|I,碘,126.9|Xe,氙,131.3|Cs,銫,132.9|Ba,鋇,137.3|La,鑭,138.9|Ce,鈰,140.1|Pr,鐠,140.9|Nd,釹,144.2|Pm,鉕,145|Sm,釤,150.4|Eu,銪,152.0|Gd,釓,157.3|Tb,鋱,158.9|Dy,鏑,162.5|Ho,鈥,164.9|Er,鉺,167.3|Tm,銩,168.9|Yb,鐿,173.0|Lu,鎦,175.0|Hf,鉿,178.5|Ta,鉭,180.9|W,鎢,183.8|Re,錸,186.2|Os,鋨,190.2|Ir,銥,192.2|Pt,鉑,195.1|Au,金,197.0|Hg,汞,200.6|Tl,鉈,204.4|Pb,鉛,207.2|Bi,鉍,209.0|Po,釙,209|At,砈,210|Rn,氡,222|Fr,鍅,223|Ra,鐳,226|Ac,錒,227|Th,釷,232.0|Pa,鏷,231.0|U,鈾,238.0|Np,錼,237|Pu,鈽,244|Am,鋂,243|Cm,鋦,247|Bk,鉳,247|Cf,鉲,251|Es,鑀,252|Fm,鐨,257|Md,鍆,258|No,鍩,259|Lr,鐒,266|Rf,鑪,267|Db,𨧀,268|Sg,𨭎,269|Bh,𨨏,270|Hs,𨭆,277|Mt,鿏,278|Ds,鐽,281|Rg,錀,282|Cn,鎶,285|Nh,鉨,286|Fl,鈇,289|Mc,鏌,290|Lv,鉝,293|Ts,鿬,294|Og,鿫,294";
+const EL=RAW.split('|').map((s,i)=>{const[a,b,c]=s.split(',');const z=i+1;let r,c0,f=0;
+ if(z<3){r=1;c0=z==1?1:18}else if(z<11){r=2;c0=z<5?z-2:z+8}else if(z<19){r=3;c0=z<13?z-10:z}
+ else if(z<37){r=4;c0=z-18}else if(z<55){r=5;c0=z-36}
+ else if(z<87){r=6;if(z<57)c0=z-54;else if(z<72){r=9;c0=z-54;f=1}else c0=z-68}
+ else{r=7;if(z<89)c0=z-86;else if(z<104){r=10;c0=z-86;f=1}else c0=z-100}
+ const g=f?3:c0;return{z,s:a,n:b,m:c,r,c:c0,g,A:!f&&(g<3||g>12)}});
+const gl=g=>g<3?g+'A':g>12?(g-10)+'A':g<8?g+'B':g<11?'8B':g==11?'1B':'2B';
+const CAT={H:[1],Li:[1],Na:[1],K:[1],Rb:[1],Cs:[1],Ag:[1],Tl:[1],Be:[2],Mg:[2],Ca:[2],Sr:[2],Ba:[2],Zn:[2],Cd:[2],Ni:[2],Mn:[2],Hg:[2],Al:[3],Ga:[3],Sc:[3],Y:[3],La:[3],Cr:[3],Bi:[3],Fe:[2,3],Co:[2,3],Cu:[1,2],Au:[1,3],Pb:[2,4],Sn:[2,4],Pt:[2,4],Ti:[4]};
+const ANI={H:[1],F:[1],Cl:[1],Br:[1],I:[1],O:[2],S:[2],Se:[2],Te:[2],N:[3],P:[3],C:[4]};
+const PL=[
+ ['NH<sub>4</sub>','銨根',1,'p'],['OH','氫氧根',-1,'p'],['NO<sub>3</sub>','硝酸根',-1,'p'],['NO<sub>2</sub>','亞硝酸根',-1,'p'],
+ ['SO<sub>4</sub>','硫酸根',-2,'p'],['SO<sub>3</sub>','亞硫酸根',-2,'p'],['CO<sub>3</sub>','碳酸根',-2,'p'],['HCO<sub>3</sub>','碳酸氫根',-1,'p'],
+ ['PO<sub>4</sub>','磷酸根',-3,'p'],['CH<sub>3</sub>COO','醋酸根',-1,'p'],['ClO<sub>3</sub>','氯酸根',-1,'p'],['ClO<sub>4</sub>','過氯酸根',-1,'p'],
+ ['MnO<sub>4</sub>','過錳酸根',-1,'p'],['CrO<sub>4</sub>','鉻酸根',-2,'p'],['Cr<sub>2</sub>O<sub>7</sub>','重鉻酸根',-2,'p'],['CN','氰根',-1,'p'],
+ ['Ag(NH<sub>3</sub>)<sub>2</sub>','二氨銀錯離子',1,'c'],['Cu(NH<sub>3</sub>)<sub>4</sub>','四氨銅錯離子',2,'c'],['HSO<sub>3</sub>','亞硫酸氫根',-1,'p'],['HSO<sub>4</sub>','硫酸氫根',-1,'p'],['HPO<sub>4</sub>','磷酸氫根',-2,'p'],['H<sub>2</sub>PO<sub>4</sub>','磷酸二氫根',-1,'p']];
+
+let S={en:new Set(EL.map(e=>e.z)),f:{sym:1,zh:1,num:0,mass:0,grp:1},gm:'A',oc:false,op:false,ox:{}};
+try{const t=JSON.parse(localStorage.getItem('chemlab')||'null');if(t){S={...S,...t,en:new Set(t.en)}}}catch(e){}
+const save=()=>{try{localStorage.setItem('chemlab',JSON.stringify({...S,en:[...S.en]}))}catch(e){}};
+const $=id=>document.getElementById(id);
+let Z=[];
+
+function cell(e,game){const on=S.en.has(e.z),f=S.f;let h='';
+ if(f.sym||!(f.zh||f.num||f.mass))h+=`<b>${e.s}</b>`;
+ if(f.zh)h+=`<span>${e.n}</span>`;if(f.num)h+=`<span>${e.z}</span>`;if(f.mass)h+=`<span>${e.m}</span>`;
+ 
+ return `<div class="c ${e.A?'a':'b'} ${on?'':'off'}" ${game?`data-k="e:${e.z}"`:`data-z="${e.z}"`} style="grid-row:${e.r+1};grid-column:${e.c}">${h}</div>`}
+const ph=(r,t)=>`<div class="c ph" style="grid-row:${r+1};grid-column:3">${t}</div>`;
+function table(game){let H='';for(let c=1;c<=18;c++)H+=`<div class="gh" style="grid-row:1;grid-column:${c}">${S.f.grp?(S.gm=='A'?gl(c):c):''}</div>`;return H+EL.map(e=>cell(e,game)).join('')+ph(6,'57–71')+ph(7,'89–103')}
+
+function render(){
+ $('gg').innerHTML=table(1);$('sg').innerHTML=table(0);renderOx();
+ $('fields').innerHTML=[['sym','英文符號'],['zh','中文名稱'],['num','原子序'],['mass','原子量'],['grp','族別（顯示於各直行最上方）']].map(([k,t])=>`<label><input type="checkbox" data-f="${k}" ${S.f[k]?'checked':''}>${t}</label>`).join('');
+ document.querySelectorAll('[name=gm]').forEach(r=>r.checked=r.value==S.gm);
+ $('oc').checked=S.oc;$('op').checked=S.op;
+ const ions=PL.map((p,i)=>[p,i]).filter(([p])=>p[3]=='p'?S.op:S.oc);
+ $('tray').classList.toggle('hide',!ions.length);
+ $('trayc').innerHTML=ions.map(([p,i])=>`<div class="chip ${p[3]=='p'?'p':'c2'}" data-k="p:${i}"><b>${p[3]=='c'?'['+p[0]+']':p[0]}</b><sup>${chg(p[2])}</sup> <span class="m">${p[1]}</span></div>`).join('');
+ $('trayc').innerHTML=trayHtml(ions);Z=Z.filter(k=>k[0]=='p'?(PL[k.slice(2)][3]=='p'?S.op:S.oc):S.en.has(+k.slice(2)));
+ zone();save()}
+const chg=c=>(Math.abs(c)>1?Math.abs(c):'')+(c>0?'+':'−');
+
+function item(k){const[t,v]=k.split(':');
+ if(t=='e'){const e=EL[v-1];const o=getOx(e.s);const ions=[...o.c,...o.a.map(q=>-q)];return{k,f:e.s,kind:'e',ions,nm:e.n}}
+ const p=PL[v];return{k,f:p[0],kind:p[3],ions:[p[2]],nm:p[1]}}
+const lab=(it,c)=>it.kind=='c'?`[${it.f}]`:it.f;
+function zone(){return zone2();const z=$('zone');
+ const ks=[...new Set(Z)];z.innerHTML=ks.length?ks.map(k=>{const it=item(k),n=Z.filter(x=>x==k).length;return `<div class="zi"><span data-rm="${k}" style="color:var(--fg)">−</span><b>${it.kind=='c'?'['+it.f+']':it.f}</b>×${n}<span data-ad="${k}" style="color:var(--ac)">＋</span></div>`}).join(''):'<span class="hint">把元素拖到這裡；同一元素可重複加入以增加個數</span>'}
+function add(k){if(Z.length>=24){msg('bad','最多同時放入 24 個。');return}if(!Z.includes(k)&&new Set(Z).size>=6){msg('bad','最多同時放入 6 種不同物質。');return}Z.push(k);zone();$('res').innerHTML=''}
+function finish(out,its,have){
+ const ok=[],no=[];
+ for(const[f,o]of [...out].slice(0,30)){const k=Math.min(...o.need.map((n,i)=>Math.floor(have[i]/n)));
+  const need=o.need.map((n,i)=>`${n} 個 ${lab(its[i])}`).join('、');
+  if(k>=1){const ls=have.map((h,i)=>h-k*o.need[i]>0?`${h-k*o.need[i]} 個 ${lab(its[i])}`:'').filter(Boolean).join('、');
+   ok.push(`<div class="mb"><div class="fm">${k>1?k+' × ':''}${f}</div><div class="ex">${o.ex}　→　總電荷 0 ✔${ls?`<br>剩餘未用：${ls}`:''}</div></div>`)}
+  else{const miss=o.need.map((n,i)=>have[i]<n?`${lab(its[i])} 還差 ${n-have[i]} 個`:'').filter(Boolean).join('、');
+   no.push(`<div class="mb">合成 <b>${f}</b> 需要 ${need}；目前${miss}。</div>`)}}
+ if(ok.length)msg('ok',ok.join('')+(no.length?'<div class="m">其他價數需要更多原子：</div><div class="ex">'+no.join('')+'</div>':''));
+ else msg('bad','⚠️ 原子數量不足，無法合成：<br>'+no.join(''))}
+const SW=52,TH=54,R=9;
+function ppath(x,y,q,t){const n=Math.max(q,1),w=n*SW,g=1.5,l=x+g,r=x+w-g,top=y,bot=y+TH;let d;
+ if(t=='a'){d=`M${l},${top}`;for(let j=0;j<q;j++){const c=x+j*SW+SW/2;d+=`L${c-R},${top}A${R},${R} 0 0 1 ${c+R},${top}`}d+=`L${r},${top}L${r},${bot}L${l},${bot}Z`}
+ else if(t=='c'){d=`M${l},${top}L${r},${top}L${r},${bot}`;for(let j=q-1;j>=0;j--){const c=x+j*SW+SW/2;d+=`L${c+R},${bot}A${R},${R} 0 0 0 ${c-R},${bot}`}d+=`L${l},${bot}Z`}
+ else d=`M${l},${top}L${r},${top}L${r},${bot}L${l},${bot}Z`;return d}
+const sl=h=>{let r='',d=0;h.split(/(<sub>.*?<\/sub>)/).forEach(p=>{if(!p)return;const m=p.match(/^<sub>(.*)<\/sub>$/);if(m){r+=`<tspan dy="4" font-size="9">${m[1]}</tspan>`;d=1}else{r+=`<tspan${d?' dy="-4"':''}>${p}</tspan>`;d=0}});return r};
+const pg=(lb,q,t,x,y,cs)=>{const w=Math.max(q,1)*SW,fs=lb.replace(/<[^>]+>/g,'').length>7?8:lb.replace(/<[^>]+>/g,'').length>4?11:14;
+ return `<path class="${t=='c'?'pc':t=='a'?'pa':'pn'}" d="${ppath(x,y,q,t)}"/><text x="${x+w/2}" y="${y+22}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="currentColor">${sl(lb)}</text><text x="${x+w/2}" y="${y+36}" text-anchor="middle" font-size="11" fill="currentColor">${cs}</text>`};
+function zone2(){const z=$('zone');
+ z.innerHTML=Z.length?Z.map(k=>{const it=item(k),u=[...new Set(it.ions)];let q=0,t='n';if(u.length==1){q=Math.abs(u[0]);t=u[0]>0?'c':'a'}
+  const cs=it.ions.length?(u.length>1&&u.some(c=>c>0)&&u.some(c=>c<0)?'+/−':it.ions.map(chg).join('/')):'—';
+  return `<div class="zt" data-rm="${k}" title="點一下移除"><svg width="${Math.max(q,1)*SW+4}" height="${TH+14}">${pg(lab(it),q,t,2,12,cs)}</svg></div>`}).join(''):'<span class="hint">把元素拖到這裡（或直接點選）；要幾個原子就重複拖曳或點選幾次</span>'}
+function puzzle(its,o,k){let cx=0,ax=0,cs='',as='';
+ for(let u=0;u<k;u++)for(const i of o.ord){const c=o.ch[i],q=Math.abs(c);for(let j=0;j<o.need[i];j++){
+  if(c>0){cs+=pg(lab(its[i]),q,'c',cx+8,6,chg(c));cx+=q*SW}else{as+=pg(lab(its[i]),q,'a',ax+8,6+TH,chg(c));ax+=q*SW}}}
+ const W=Math.max(cx,ax)+16,H=6+2*TH+46;
+ return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block"><g>${cs}</g><g class="arow" style="transform:translate(0,46px)">${as}</g></svg>`}
+function finish2(out,its,have){
+ const ok=[],no=[];
+ for(const[f,o]of [...out].slice(0,30)){const k=Math.min(...o.need.map((n,i)=>Math.floor(have[i]/n)));
+  if(k>=1){const ls=have.map((h,i)=>h-k*o.need[i]>0?`${h-k*o.need[i]} 個 ${lab(its[i])}`:'').filter(Boolean).join('、');
+   const T=o.ord.reduce((s,i)=>s+(o.ch[i]>0?o.ch[i]*o.need[i]:0),0);
+   ok.push(`<div class="mb"><div class="fm">${k>1?k+' × ':''}${f}</div><div class="scroll">${puzzle(its,o,k)}</div><div class="ex">價數算法（每個化合物單位）：${o.ex}<br>正電荷 +${T}　負電荷 −${T}　→　總和 0 ✔　凸點與凹槽完全吻合${ls?`<br>剩餘未用：${ls}`:''}</div></div>`)}
+  else{const need=o.need.map((n,i)=>`${n} 個 ${lab(its[i])}`).join('、');const miss=o.need.map((n,i)=>have[i]<n?`${lab(its[i])} 還差 ${n-have[i]} 個`:'').filter(Boolean).join('、');
+   no.push(`<div class="mb">合成 <b>${f}</b> 需要 ${need}；目前${miss}。</div>`)}}
+ if(ok.length)msg('ok',ok.join('')+(no.length?'<div class="m">其他價數需要更多原子：</div><div class="ex">'+no.join('')+'</div>':''));
+ else msg('bad','⚠️ 原子數量不足，無法合成：<br>'+no.join(''));
+ setTimeout(()=>document.querySelectorAll('#res .arow').forEach(g=>g.style.transform='translate(0,0)'),80)}
+const RC={0:[['N',1,-3],['H',4,1]],1:[['O',1,-2],['H',1,1]],2:[['N',1,5],['O',3,-2]],3:[['N',1,3],['O',2,-2]],4:[['S',1,6],['O',4,-2]],5:[['S',1,4],['O',3,-2]],6:[['C',1,4],['O',3,-2]],7:[['H',1,1],['C',1,4],['O',3,-2]],8:[['P',1,5],['O',4,-2]],10:[['Cl',1,5],['O',3,-2]],11:[['Cl',1,7],['O',4,-2]],12:[['Mn',1,7],['O',4,-2]],13:[['Cr',1,6],['O',4,-2]],14:[['Cr',2,6],['O',7,-2]],15:[['C',1,2],['N',1,-3]],18:[['H',1,1],['S',1,4],['O',3,-2]],19:[['H',1,1],['S',1,6],['O',4,-2]],20:[['H',1,1],['P',1,5],['O',4,-2]],21:[['H',2,1],['P',1,5],['O',4,-2]]};
+const sg=v=>(v>0?'+':'−')+Math.abs(v);
+function trayHtml(ions){return ions.map(([p,i])=>{const q=p[2],it=item('p:'+i),rc=RC[i]?RC[i].map(([s,n])=>(n>1?n+' ':'')+s).join(' + '):'單一積木',w=Math.max(Math.abs(q),1)*SW+4;
+ return `<div style="text-align:center;max-width:${Math.max(w,96)}px"><div class="zt" data-k="p:${i}" style="display:inline-block"><svg width="${w}" height="${TH+14}">${pg(lab(it),Math.abs(q),q>0?'c':'a',2,12,chg(q))}</svg></div><div class="m">${p[1]}<br>${rc}</div></div>`}).join('')}
+function radTry(keys,have){if(!S.op||!keys.every(k=>k[0]=='e'))return false;
+ const zc={};keys.forEach((k,i)=>zc[EL[k.slice(2)-1].s]=have[i]);const nm=Object.keys(zc).length;
+ for(const i in RC){const comp=RC[i];if(comp.length!=nm||!comp.every(([s])=>zc[s]))continue;
+  const k=zc[comp[0][0]]/comp[0][1];if(!Number.isInteger(k)||!comp.every(([s,n])=>zc[s]==n*k))continue;
+  showRad(+i,k,comp);return true}return false}
+function showRad(i,k,comp){const p=PL[i],q=p[2],its=[],o={ord:[],need:[],ch:[]};
+ comp.forEach(([s,n,c])=>{its.push(item('e:'+EL.find(e=>e.s==s).z));o.need.push(n);o.ch.push(c)});
+ o.ord=comp.map((_,j)=>j).sort((a,b)=>(o.ch[b]>0)-(o.ch[a]>0));
+ const calc=comp.map(([s,n,c])=>`${s} ${sg(c)} × ${n} ＝ ${sg(c*n)}`).join('<br>');
+ const P=comp.reduce((s,[,n,c])=>s+(c>0?n*c:0),0),N=comp.reduce((s,[,n,c])=>s+(c<0?-n*c:0),0);
+ const tile=`<svg width="${Math.abs(q)*SW+4}" height="${TH+14}">${pg(lab(item('p:'+i)),Math.abs(q),q>0?'c':'a',2,12,chg(q))}</svg>`;
+ msg('ok',`<div class="fm">${k>1?k+' × ':''}${p[0]}<sup>${chg(q)}</sup>　<span style="font-size:15px">${p[1]}</span></div><div class="scroll" style="display:flex;align-items:center;gap:8px"><div>${puzzle(its,o,1)}</div><b>→</b>${tile.repeat(k)}</div><div class="ex">價數算法（每個${p[1]}）：<br>${calc}<br>陰陽共 ${P} 個凹槽、${N} 個凸點：${Math.min(P,N)} 組互相嵌合，剩 ${Math.abs(P-N)} 個${N>P?'凸點':'凹槽'}外露 → 淨電荷 ${sg(P-N)}，即 ${p[0]}<sup>${chg(q)}</sup></div><div style="margin-top:6px"><button id="radgo" class="on">把${p[1]}放入合成區</button></div>`);
+ $('radgo').onclick=()=>{Z=[];for(let j=0;j<k;j++)Z.push('p:'+i);zone();$('res').innerHTML=''};
+ setTimeout(()=>document.querySelectorAll('#res .arow').forEach(g=>g.style.transform='translate(0,0)'),80)}
+const HP={6:{1:7},5:{1:18},4:{1:19},8:{1:20,2:21},20:{1:21}},ACID={7:'H<sub>2</sub>CO<sub>3</sub>',18:'H<sub>2</sub>SO<sub>3</sub>',19:'H<sub>2</sub>SO<sub>4</sub>',20:'H<sub>2</sub>PO<sub>4</sub><sup>−</sup>（磷酸二氫根）',21:'H<sub>3</sub>PO<sub>4</sub>'};
+function hpTry(keys,have){if(keys.length!=2)return false;const hi=keys.indexOf('e:1'),pi=keys.findIndex(k=>k[0]=='p');if(hi<0||pi<0)return false;
+ const pidx=+keys[pi].slice(2),m=have[hi]/have[pi],tgt=(HP[pidx]||{})[m];if(!tgt||!Number.isInteger(m))return false;const k=have[pi],pc=PL[pidx][2],q=PL[tgt][2];
+ const its=[item('e:1'),item(keys[pi])],o={ord:[0,1],need:[m,1],ch:[1,pc]};
+ const tile=`<svg width="${Math.abs(q)*SW+4}" height="${TH+14}">${pg(lab(item('p:'+tgt)),Math.abs(q),q>0?'c':'a',2,12,chg(q))}</svg>`;
+ msg('ok',`<div class="fm">${k>1?k+' × ':''}${PL[tgt][0]}<sup>${chg(q)}</sup>　<span style="font-size:15px">${PL[tgt][1]}</span></div><div class="scroll" style="display:flex;align-items:center;gap:8px"><div>${puzzle(its,o,1)}</div><b>→</b>${tile.repeat(k)}</div><div class="ex">價數算法（每個${PL[tgt][1]}）：<br>${m>1?m+' × ':''}H ${sg(1)} ＋ ${PL[pidx][0]} ${sg(pc)} ＝ ${sg(m+pc)}<br>${m} 個凹槽與 ${m} 個凸點嵌合，剩 ${Math.abs(pc)-m} 個凸點外露 → 淨電荷 ${sg(m+pc)}，即 ${PL[tgt][0]}<sup>${chg(q)}</sup><br>若再加入 1 個 H⁺，可合成 ${ACID[tgt]}。</div><div style="margin-top:6px"><button id="radgo" class="on">把${PL[tgt][1]}放入合成區</button></div>`);
+ $('radgo').onclick=()=>{Z=[];for(let j=0;j<k;j++)Z.push('p:'+tgt);zone();$('res').innerHTML=''};
+ setTimeout(()=>document.querySelectorAll('#res .arow').forEach(g=>g.style.transform='translate(0,0)'),80);return true}
+function msg(c,h){$('res').innerHTML=`<div class="res ${c}">${h}</div>`}
+const part=(it,n)=>{const b=it.kind=='p'&&n>1?`(${it.f})`:it.kind=='c'?`[${it.f}]`:it.f;return n>1?b+`<sub>${n}</sub>`:b};
+
+function synth(){
+ const keys=[...new Set(Z)],its=keys.map(item),have=keys.map(k=>Z.filter(x=>x==k).length);if(hpTry(keys,have)||radTry(keys,have))return;
+ if(its.length<2)return msg('bad','⚠️ 請至少放入兩種不同的元素或原子團。');
+ const noIon=its.filter(i=>!i.ions.length);
+ if(noIon.length)return msg('bad',`⚠️ ${noIon.map(i=>i.nm+'（'+i.f+'）').join('、')} 在本遊戲中沒有常見的離子價數（例如惰性氣體不易形成離子），無法以離子方式合成。`);
+ const allP=its.every(i=>i.ions.every(c=>c>0)),allN=its.every(i=>i.ions.every(c=>c<0));
+ if(allP||allN)return msg('bad',`⚠️ 放入的物質全是${allP?'陽離子':'陰離子'}，總電荷無法為 0。合成離子化合物需要<b>陽離子總價數＝陰離子總價數</b>，請加入${allP?'陰離子（如 O、Cl、S、SO₄）':'陽離子（如 Na、Ca、Al、NH₄）'}。`);
+ const out=new Map();let cc=0;
+ (function rec(k,ch){if(k==its.length){if(++cc>3000)return;return tryC(ch)}for(const c of its[k].ions)rec(k+1,[...ch,c])})(0,[]);
+ function tryC(ch){if(!ch.some(c=>c>0)||!ch.some(c=>c<0))return;
+  let best=null;const n=ch.length,cnt=Array(n).fill(1),MX=n<=3?8:6;
+  const P=Array(n+1).fill(0),N=Array(n+1).fill(0);for(let j=n-1;j>=0;j--){P[j]=P[j+1]+MX*Math.max(ch[j],0);N[j]=N[j+1]+MX*Math.max(-ch[j],0)}
+  (function r(k,s,t){if(t+P[k]<0||t-N[k]>0)return;if(best&&s+(n-k)>best.s)return;if(k==n){if(t==0){const sat=cnt.every((q,i)=>q<=have[i]);if(!best||s<best.s||(s==best.s&&sat&&!best.sat))best={s,cnt:[...cnt],sat}}return}for(let q=1;q<=MX;q++){cnt[k]=q;r(k+1,s+q,t+q*ch[k])}})(0,0,0);
+  if(!best)return;
+  const ord=ch.map((c,i)=>i).sort((a,b)=>(ch[b]>0)-(ch[a]>0));
+  const hI=ch.findIndex((c,i)=>c>0&&its[i].k=='e:1'),oc=ch.some((c,i)=>c>0&&i!=hI);let fo=[...ord],ps2=null;
+  if(hI>=0&&oc){fo=[...ord.filter(i=>ch[i]>0&&i!=hI),hI,...ord.filter(i=>ch[i]<0)];
+   let tg;const a=fo.find(i=>{if(!(ch[i]<0&&its[i].k[0]=='p'))return false;tg=(HP[+its[i].k.slice(2)]||{})[best.cnt[hI]/best.cnt[i]];return !!tg});
+   if(a!==undefined)ps2={a,t:item('p:'+tg)}}
+  fo.sort((a,b)=>(its[b].k=='p:9')-(its[a].k=='p:9'));
+  let f=fo.map(i=>ps2&&i==hI?'':ps2&&i==ps2.a?part(ps2.t,best.cnt[i]):part(its[i],best.cnt[i])).join('');if(f=='HOH')f='H<sub>2</sub>O';f=f.replace(/^H(?:<sub>(\d+)<\/sub>)?H(?:<sub>(\d+)<\/sub>)?(?=[A-Z])/,(m,a,b)=>{const t=(+a||1)+(+b||1);return 'H'+(t>1?`<sub>${t}</sub>`:'')});
+  const ex=ord.map(i=>`${lab(its[i])}<sup>${chg(ch[i])}</sup> ×${best.cnt[i]}（${ch[i]*best.cnt[i]>0?'+':'−'}${Math.abs(ch[i]*best.cnt[i])}）`).join('　＋　');
+  if(!out.has(f))out.set(f,{ex,need:[...best.cnt],ord,ch:[...ch]})}
+ if(!out.size)return msg('bad','⚠️ 這個組合在各 1–6 個的範圍內找不到使「正電荷總和＝負電荷總和」的比例，無法形成穩定的離子化合物。試試換一個元素或原子團。');
+ finish2(out,its,have);if(out.size>30)$('res').insertAdjacentHTML('beforeend','<div class="m">共 '+out.size+' 種可能，僅列出前 30 種。</div>');if(cc>3000)$('res').insertAdjacentHTML('beforeend','<div class="m">價數組合很多，僅計算前 3000 種組合。</div>');return;msg('ok',[...out].map(([f,ex])=>`<div class="mb"><div class="fm">${f}</div><div class="ex">${ex}　→　總電荷 0 ✔</div></div>`).join('')+(out.size>1?'<div class="m">此元素有多種價數，所以可合成多種化合物。</div>':''))}
+
+// events
+const getOx=s=>(S.ox&&S.ox[s])||{c:CAT[s]||[],a:ANI[s]||[]};
+const ps=v=>[...new Set(String(v).split(/[,，、\s]+/).map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=8))].sort((a,b)=>a-b);
+function renderOx(){$('oxt').innerHTML='<tr><th>元素</th><th>陽離子價數</th><th>陰離子價數</th></tr>'+EL.map(e=>{const o=getOx(e.s),m=S.ox&&S.ox[e.s];return `<tr class="${m?'mod':''}"><td><b>${e.s}</b> ${e.n}</td><td><input data-s="${e.s}" data-t="c" value="${o.c.join(',')}"></td><td><input data-s="${e.s}" data-t="a" value="${o.a.join(',')}"></td></tr>`}).join('')}
+$('oxt').onchange=e=>{const i=e.target;if(!i.dataset.s)return;const s=i.dataset.s,o={...getOx(s)};o[i.dataset.t]=psr(i.value);S.ox=S.ox||{};S.ox[s]=o;i.value=o[i.dataset.t].join(',');i.closest('tr').classList.add('mod');save()};
+$('oxr').onclick=()=>{S.ox={};renderOx();save()};
+const psr=v=>{const s=new Set();String(v).split(/[,，、\s]+/).forEach(t=>{const m=t.match(/^\+?(\d+)[~～-]\+?(\d+)$/);if(m){let a=+m[1],b=+m[2];if(a>b)[a,b]=[b,a];for(let i=a;i<=b;i++)s.add(i)}else if(/^\+?\d+$/.test(t))s.add(+t)});return [...s].filter(n=>n>=1&&n<=8).sort((a,b)=>a-b)};
+$('rg').innerHTML='<option value="all">全部元素</option><option value="A">A 族全部</option><option value="B">B 族全部</option><option value="f">鑭系／錒系</option>'+Array.from({length:18},(_,i)=>`<option value="g${i+1}">${gl(i+1)}（第 ${i+1} 族）</option>`).join('');
+$('rg').value='g17';
+$('rgo').onclick=()=>{let a=Math.trunc(+$('rmin').value),b=Math.trunc(+$('rmax').value);if(isNaN(a)||isNaN(b)){$('oxm').textContent='請輸入有效的數字範圍。';return}
+ a=Math.max(-8,Math.min(8,a));b=Math.max(-8,Math.min(8,b));if(a>b)[a,b]=[b,a];const v=$('rg').value;
+ const els=EL.filter(e=>v=='all'||(v=='A'&&e.A)||(v=='B'&&!e.A)||(v=='f'&&e.r>=9)||(v[0]=='g'&&e.r<9&&e.g==+v.slice(1)));
+ const c=[],an=[];for(let i=Math.max(a,1);i<=b;i++)c.push(i);for(let i=Math.max(-b,1);i<=-a;i++)an.push(i);
+ S.ox=S.ox||{};els.forEach(e=>{if(c.join()==(CAT[e.s]||[]).join()&&an.join()==(ANI[e.s]||[]).join())delete S.ox[e.s];else S.ox[e.s]={c:[...c],a:[...an]}});
+ renderOx();save();$('oxm').textContent=`已套用到 ${els.length} 個元素：陽離子 ${c.join(',')||'無'}；陰離子 ${an.join(',')||'無'}。`};
+function oxExport(){return '{"type":"chemlab-ox","v":1,"ox":{\n'+EL.map(e=>{const o=getOx(e.s);return `"${e.s}":{"c":${JSON.stringify(o.c)},"a":${JSON.stringify(o.a)}}`}).join(',\n')+'\n}}'}
+function oxImport(t){let j;try{j=JSON.parse(t)}catch(e){return '讀入失敗：不是有效的 JSON 格式。'}
+ const src=j&&j.ox?j.ox:j;if(!src||typeof src!='object')return '讀入失敗：找不到價數資料。';
+ const n={};let cnt=0;
+ for(const e of EL){const v=src[e.s];if(!v||typeof v!='object')continue;cnt++;
+  const c=ps(Array.isArray(v.c)?v.c.join(','):''),a=ps(Array.isArray(v.a)?v.a.join(','):''),d=(CAT[e.s]||[]);
+  if(c.join()!=d.join()||a.join()!=(ANI[e.s]||[]).join())n[e.s]={c,a}}
+ if(!cnt)return '讀入失敗：沒有可辨識的元素資料。';
+ S.ox=n;renderOx();save();return `讀入完成：套用 ${cnt} 個元素的價數（其中 ${Object.keys(n).length} 個與預設不同）。`}
+$('oxe').onclick=async()=>{let d=null;try{d=window.claude?await claude.use('downloads'):null}catch(e){}if(!d){$('oxm').textContent='此環境無法下載檔案。';return}try{await d.save({filename:'chemlab-valence.json',data:oxExport()});$('oxm').textContent='已匯出 chemlab-valence.json。'}catch(e){$('oxm').textContent=e&&e.code=='declined'?'已取消匯出。':'匯出失敗（'+(e&&e.code||'未知錯誤')+'）。'}};
+$('oxc').onclick=async()=>{const a=$('oxa');if(!a.value)a.value=oxExport();a.select();try{await navigator.clipboard.writeText(a.value);$('oxm').textContent='已複製到剪貼簿。'}catch(e){try{document.execCommand('copy');$('oxm').textContent='已複製（若失敗請手動全選複製）。'}catch(e2){$('oxm').textContent='無法自動複製，請手動全選文字框內容複製。'}}};
+$('oxi').onclick=()=>{$('oxm').textContent=oxImport($('oxa').value)};
+$('oxf').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('oxa').value=r.result;$('oxm').textContent=oxImport(r.result)};r.readAsText(f);e.target.value=''};
+function show(p){['game','set','oxp'].forEach(i=>$(i).classList.toggle('hide',i!=p));[['tg','game'],['ts','set'],['tx','oxp']].forEach(([b,i])=>$(b).classList.toggle('on',i==p))}
+$('tg').onclick=()=>show('game');$('ts').onclick=()=>show('set');$('tx').onclick=()=>show('oxp');
+$('go').onclick=synth;$('clr').onclick=()=>{Z=[];zone();$('res').innerHTML=''};
+$('zone').onclick=e=>{const r=e.target.dataset.rm,a=e.target.dataset.ad;if(r){Z.splice(Z.lastIndexOf(r),1);zone();$('res').innerHTML=''}if(a)add(a)};
+$('sg').onclick=e=>{const c=e.target.closest('[data-z]');if(!c)return;const z=+c.dataset.z;S.en.has(z)?S.en.delete(z):S.en.add(z);render()};
+document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const q=b.dataset.q;S.en=new Set(EL.filter(e=>q=='all'||(q=='A'&&e.A)||(q=='B'&&!e.A&&q!='none')).map(e=>e.z));if(q=='none')S.en=new Set();render()});
+$('fields').onchange=e=>{S.f[e.target.dataset.f]=e.target.checked?1:0;render()};
+document.querySelectorAll('[name=gm]').forEach(r=>r.onchange=()=>{S.gm=r.value;render()});
+$('oc').onchange=e=>{S.oc=e.target.checked;render()};$('op').onchange=e=>{S.op=e.target.checked;render()};
+
+// drag (mouse/pen) + tap (touch)
+let dr=null;
+document.addEventListener('pointerdown',e=>{const t=e.target.closest('[data-k]');if(!t||t.classList.contains('off'))return;dr={k:t.dataset.k,x:e.clientX,y:e.clientY,g:null,t:t.textContent.trim().split(/\s/)[0]}});
+document.addEventListener('pointermove',e=>{if(!dr||e.pointerType=='touch')return;
+ if(!dr.g&&Math.hypot(e.clientX-dr.x,e.clientY-dr.y)>5){dr.g=document.createElement('div');dr.g.className='ghost';dr.g.textContent=dr.t;document.body.appendChild(dr.g)}
+ if(dr.g){dr.g.style.left=e.clientX+'px';dr.g.style.top=e.clientY+'px';$('zone').classList.toggle('hot',inZ(e))}});
+const inZ=e=>{const r=$('zone').getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom};
+document.addEventListener('pointerup',e=>{if(!dr)return;const d=dr;dr=null;$('zone').classList.remove('hot');
+ if(d.g){d.g.remove();if(inZ(e))add(d.k)}else add(d.k)});
+document.addEventListener('pointercancel',()=>{if(dr&&dr.g)dr.g.remove();dr=null});
+render();
+</script>
+<script>
+(()=>{
+const G=id=>document.getElementById(id),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function rng(a){return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rc=(g,c,x,y,w,h)=>{g.fillStyle=c;g.fillRect(x|0,y|0,Math.max(0,w|0),Math.max(0,h|0))};
+const mix=(a,b,k)=>`rgb(${a[0]+(b[0]-a[0])*k|0},${a[1]+(b[1]-a[1])*k|0},${a[2]+(b[2]-a[2])*k|0})`;
+/* ---- background lab scene (pixel art, low-res canvas) ---- */
+const bg=G('bg'),bx=bg.getContext('2d'),st=document.createElement('canvas'),sx=st.getContext('2d');
+let W=320,H=180,cand=[],stars=[],motes=[];
+function scene(){
+ W=Math.max(140,Math.min(420,Math.round(H*innerWidth/innerHeight)));bg.width=st.width=W;bg.height=st.height=H;
+ const r=rng(7),g=sx;cand=[];stars=[];motes=[];
+ rc(g,'#150f1f',0,0,W,H);
+ for(let y=0;y<128;y+=8){const o=(y/8)%2?10:0;for(let x=-o;x<W;x+=20){const v=r()*14|0;rc(g,`rgb(${40+v},${32+v},${58+v})`,x+1,y+1,19,7);rc(g,`rgb(${60+v},${50+v},${82+v})`,x+1,y+1,19,1)}}
+ rc(g,'#1b1320',0,128,W,4);
+ for(let y=132;y<H;y+=12){rc(g,'#3d2b1f',0,y,W,12);rc(g,'#58432e',0,y,W,1);rc(g,'#24170d',0,y+11,W,1);for(let x=(y/12%2)*20;x<W;x+=40)rc(g,'#24170d',x,y,1,12)}
+ const cx=Math.max(36,Math.round(W*.15)),hw=22;
+ for(let y=7;y<92;y++){const d=y<32?Math.sqrt(Math.max(0,(hw+3)**2-(32-y)**2)):hw+3;rc(g,'#3a3048',cx-d,y,d*2,1)}
+ for(let y=10;y<90;y++){const d=y<32?Math.sqrt(Math.max(0,hw**2-(32-y)**2)):hw,t=(y-10)/80;rc(g,`rgb(${14+t*30|0},${22+t*40|0},${60+t*60|0})`,cx-d,y,d*2,1)}
+ for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++)if(dx*dx+dy*dy<=49)rc(g,(dx+2)**2+(dy-1)**2<30?'#f6f0cf':'#d9d3b0',cx+6+dx,36+dy,1,1);
+ g.globalCompositeOperation='lighter';const gr=g.createRadialGradient(cx+6,36,0,cx+6,36,40);gr.addColorStop(0,'rgba(140,170,255,.4)');gr.addColorStop(1,'rgba(140,170,255,0)');g.fillStyle=gr;g.fillRect(cx-40,0,100,90);g.globalCompositeOperation='source-over';
+ rc(g,'#2a2236',cx-1,10,2,82);rc(g,'#2a2236',cx-hw,52,hw*2,2);rc(g,'#4a3d5c',cx-hw-5,92,hw*2+10,4);rc(g,'#2a2236',cx-hw-5,96,hw*2+10,1);
+ for(let i=0;i<16;i++)stars.push({x:cx-hw+2+(r()*(hw*2-4)|0),y:14+(r()*34|0),p:r()*6});
+ const x0=Math.max(cx+46,Math.round(W*.5)),x1=W-6,pal=['#3fe0b0','#c44cff','#ff5c7a','#ffcf4a','#4aa8ff'];
+ [46,84].forEach(py=>{rc(g,'#6b4a2b',x0,py,x1-x0,4);rc(g,'#a07a47',x0,py,x1-x0,1);rc(g,'#2e1c0c',x0,py+4,x1-x0,2);rc(g,'#4a3019',x0+8,py+6,3,7);rc(g,'#4a3019',x1-12,py+6,3,7);
+  for(let x=x0+6;x<x1-26;){
+   if(r()<.55){const bw=7+(r()*3|0),bh=9+(r()*6|0),c=pal[r()*5|0];rc(g,'#0d0914',x-1,py-bh-1,bw+2,bh+1);rc(g,'#0d0914',x+bw/2-2,py-bh-5,4,5);rc(g,'#9fb6c8',x+bw/2-1,py-bh-4,2,4);rc(g,'#9a6b3a',x+bw/2-1,py-bh-6,2,2);rc(g,c,x,py-bh+3,bw,bh-3);rc(g,'#9fb6c8',x,py-bh,bw,3);rc(g,'rgba(255,255,255,.7)',x+1,py-bh+4,1,3);x+=bw+3}
+   else{for(let k=0;k<3;k++){const w=4+(r()*2|0),h=12+(r()*5|0);rc(g,['#7a2230','#27603f','#263f7a','#6a4a22'][r()*4|0],x,py-h,w,h);rc(g,'rgba(0,0,0,.35)',x+w-1,py-h,1,h);rc(g,'#e0b84a',x,py-h+3,w,1);x+=w}x+=3}}
+  const q=x1-14;rc(g,'#e8dcc0',q,py-10,4,10);rc(g,'#bfae8a',q+3,py-10,1,10);cand.push({x:q+2,y:py-12})});
+ const hx=Math.round(W*.37);rc(g,'#6b4a2b',hx,0,1,16);for(let i=0;i<22;i++)rc(g,i%2?'#3f8f4a':'#2b6b3a',hx-5+(r()*10|0),14+(r()*16|0),2,3);rc(g,'#c9a96a',hx-1,15,3,2);
+ for(let i=0;i<34;i++)motes.push({x:r()*W,y:r()*H,vx:(r()-.5)*.25,vy:-.05-r()*.15,p:r()*6});
+}
+function bgFrame(t){
+ bx.drawImage(st,0,0);
+ stars.forEach(s=>rc(bx,`rgba(255,255,230,${.35+.65*Math.abs(Math.sin(t/700+s.p))})`,s.x,s.y,1,1));
+ bx.globalCompositeOperation='lighter';
+ cand.forEach((c,i)=>{const f=Math.sin(t/90+i*2)*.5+Math.sin(t/37+i)*.5,gr=bx.createRadialGradient(c.x,c.y,0,c.x,c.y,36+f*4);gr.addColorStop(0,'rgba(255,170,70,.55)');gr.addColorStop(1,'rgba(255,170,70,0)');bx.fillStyle=gr;bx.fillRect(c.x-44,c.y-44,88,88)});
+ motes.forEach(m=>{m.x+=m.vx;m.y+=m.vy;if(m.y<0)m.y=H;if(m.x<0)m.x=W;if(m.x>W)m.x=0;rc(bx,`rgba(255,230,160,${.25+.35*Math.sin(t/500+m.p)**2})`,m.x,m.y,1,1)});
+ bx.globalCompositeOperation='source-over';
+ cand.forEach((c,i)=>{const f=Math.sin(t/90+i*2)>0?1:0;rc(bx,'#ff9a2e',c.x-1,c.y-3-f,2,4+f);rc(bx,'#ffe27a',c.x,c.y-2-f,1,3)})}
+/* ---- cauldron: boiling potion, fire, steam ---- */
+const pc=G('potion'),px=pc.getContext('2d'),liq=document.querySelector('.liq'),caul=document.querySelector('.caul');
+const PAL={idle:[[150,185,178],[62,104,102],[26,44,50]],ok:[[214,200,152],[148,124,74],[58,46,30]],bad:[[186,165,202],[100,78,120],[38,30,48]]};
+let tgt='idle',cur=PAL.idle.map(a=>a.slice()),bub=[];
+function potFrame(t){
+ const w=Math.max(40,Math.round(liq.clientWidth/6)),h=Math.max(30,Math.round(liq.clientHeight/6));
+ if(pc.width!=w||pc.height!=h){pc.width=w;pc.height=h}
+ cur.forEach((c,i)=>c.forEach((v,j)=>c[j]+=(PAL[tgt][i][j]-v)*.12));
+ const[A,B,C]=cur;
+ for(let y=0;y<h;y++){const k=Math.floor(Math.max(0,y-3)/(h-3)*7)/7;rc(px,k<.4?mix(A,B,k/.4):mix(B,C,(k-.4)/.6),0,y,w,1)}
+ for(let x=0;x<w;x++){const s=3+Math.round(Math.sin(x*.28+t/380)*1.4+Math.sin(x*.11-t/610));rc(px,'#0a0710',x,0,1,s);rc(px,mix(A,[255,255,255],.45),x,s,1,1)}
+ px.fillStyle='rgba(255,255,255,.13)';for(let k=0;k<6;k++)px.fillRect(((k*37+t/45)%w)|0,8+(k*11)%Math.max(1,h-12),9,1);
+ if(Math.random()<.3&&bub.length<(tgt=='idle'?16:34))bub.push({x:Math.random()*w,y:h-1,r:1+(Math.random()*3|0),v:.25+Math.random()*.5});
+ bub=bub.filter(b=>{b.y-=b.v;b.x+=Math.sin(b.y/3+b.r)*.15;if(b.y<4+b.r)return false;
+  const c=mix(A,[255,255,255],.6);if(b.r==1)rc(px,c,b.x,b.y,2,2);else{for(let a=0;a<12;a++)rc(px,c,b.x+Math.cos(a/12*6.283)*b.r,b.y+Math.sin(a/12*6.283)*b.r,1,1);rc(px,'#fff',b.x-b.r/2,b.y-b.r/2,1,1)}return true})}
+const splash=()=>{const w=pc.width;for(let i=0;i<12;i++)bub.push({x:w*.15+Math.random()*w*.7,y:pc.height*.85,r:1+(Math.random()*3|0),v:.7+Math.random()*.9})};
+const sc=G('steam'),sd=sc.getContext('2d');let pt=[];
+function burst(c,up){const w=sc.width,h=sc.height;for(let i=0;i<(up?40:22);i++)pt.push({x:w/2+(Math.random()-.5)*w*.4,y:h-3,vx:(Math.random()-.5)*(up?1.6:.7),vy:-(up?.5+Math.random()*1.3:.2+Math.random()*.5),g:up?.03:-.005,l:0,m:up?45+Math.random()*30:70+Math.random()*40,s:up?1+(Math.random()*2|0):3,c})}
+function steamFrame(){const w=Math.max(40,Math.round(sc.clientWidth/6)),h=Math.max(12,Math.round(sc.clientHeight/6));if(sc.width!=w||sc.height!=h){sc.width=w;sc.height=h}
+ sd.clearRect(0,0,w,h);
+ if(Math.random()<.4)pt.push({x:w*(.2+Math.random()*.6),y:h-2,vx:(Math.random()-.5)*.15,vy:-(.12+Math.random()*.2),g:0,l:0,m:60+Math.random()*40,s:2+(Math.random()*2|0),c:tgt=='ok'?'255,230,140':tgt=='bad'?'200,130,255':'190,255,225'});
+ pt=pt.filter(p=>{p.l++;p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;if(p.l>p.m||p.y<-4)return false;sd.fillStyle=`rgba(${p.c},${(1-p.l/p.m)*.5})`;sd.fillRect(p.x|0,p.y|0,p.s,p.s);return true})}
+const fc=G('fire'),fd=fc.getContext('2d');
+function fireFrame(t){const w=Math.max(30,Math.round(fc.clientWidth/5)),h=Math.max(14,Math.round(fc.clientHeight/5));if(fc.width!=w||fc.height!=h){fc.width=w;fc.height=h}
+ fd.clearRect(0,0,w,h);
+ [['#c0281c',1],['#ff7a1a',.72],['#ffd23a',.42]].forEach(([c,s],n)=>{for(let x=2;x<w-2;x++){const e=1-Math.abs(x-w/2)/(w/2),hh=(h-4)*s*Math.pow(e,.6)*(.65+.35*Math.sin(x*.7+t/(95-n*18)+n*2))*(.82+.18*Math.sin(x*2.1-t/60));rc(fd,c,x,h-4-hh,1,hh+1)}});
+ rc(fd,'#5a3a1e',w*.16,h-4,w*.68,3);rc(fd,'#8a5a2a',w*.16,h-4,w*.68,1);rc(fd,'#24170d',w*.16,h-1,w*.68,1);
+ for(let i=0;i<5;i++)rc(fd,'#ffb347',(w*.2+(i*13+t/50)%(w*.6))|0,h-3,1,1)}
+/* ---- hook into the original game (rules untouched) ---- */
+let rt;const _msg=msg;msg=function(c,h){_msg(c,h);const ok=c=='ok';tgt=ok?'ok':'bad';caul.className='caul '+c;if(!ok)burst('190,120,255',0);clearTimeout(rt);rt=setTimeout(()=>{caul.className='caul';tgt='idle'},2600)};
+const _add=add;add=function(k){const n=Z.length;_add(k);if(Z.length>n)splash()};
+/* ---- puzzle pieces in the cauldron snap together on synthesis ---- */
+let combo=null,ct=[];
+const clearCombo=()=>{ct.forEach(clearTimeout);ct=[];if(combo){combo.el.remove();combo.cap.remove();combo.tiles.forEach(t=>t.style.visibility='');combo=null}};
+const _zone=zone;zone=function(){clearCombo();return _zone()};
+function combine(){
+ clearCombo();
+ const ag=G('res').querySelector('.arow'),svg=ag&&ag.closest('svg'),tiles=[...G('zone').querySelectorAll('.zt')];
+ if(!svg||!tiles.length)return false;
+ const pcs=[...svg.querySelectorAll('path')].map(p=>{const l=p.nextElementSibling;return{p,l,c:l&&l.nextElementSibling,b:p.getBBox(),a:p.classList.contains('pa'),lab:l?l.textContent:''}});
+ const used=new Set(),m=[];
+ tiles.forEach(t=>{const lb=t.querySelector('text').textContent,i=pcs.findIndex((q,j)=>!used.has(j)&&q.lab==lb);if(i>=0){used.add(i);m.push({t,q:pcs[i]})}});
+ if(!m.length)return false;
+ const B=m.map(o=>o.q.b),minx=Math.min(...B.map(b=>b.x)),miny=Math.min(...B.map(b=>b.y)),TW=Math.max(...B.map(b=>b.x+b.width))-minx,TH2=Math.max(...B.map(b=>b.y+b.height))-miny;
+ const lr=liq.getBoundingClientRect(),s=Math.min(1,lr.width*.84/TW,(lr.height-34)/TH2),pad=2,ox=lr.left+(lr.width-TW*s)/2,oy=lr.top+16+(lr.height-16-TH2*s)/2;
+ const el=document.createElement('div');el.className='cmb';el.title='點一下拆開拼圖';el.style.cssText=`left:${ox-lr.left}px;top:${oy-lr.top}px;width:${TW}px;height:${TH2}px;transform:scale(${s})`;
+ const cap=document.createElement('div');cap.className='cap';const fm=G('res').querySelector('.fm');cap.innerHTML=fm?fm.innerHTML:'';
+ const pz=m.map(({t,q})=>{const b=q.b,n=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  n.setAttribute('class','pz');n.setAttribute('width',b.width+pad*2);n.setAttribute('height',b.height+pad*2);n.setAttribute('viewBox',`${b.x-pad} ${b.y-pad} ${b.width+pad*2} ${b.height+pad*2}`);
+  [q.p,q.l,q.c].forEach(e=>e&&n.appendChild(e.cloneNode(true)));
+  const fx0=b.x-minx-pad,fy0=b.y-miny-pad;n.style.left=fx0+'px';n.style.top=fy0+'px';
+  const r=t.querySelector('svg').getBoundingClientRect(),sx0=r.left+3.5-pad,sy0=r.top+12-pad-(q.a?9:0);
+  n.style.transform=`translate(${(sx0-(ox+fx0*s))/s}px,${(sy0-(oy+fy0*s))/s}px)`;el.appendChild(n);return{n,a:q.a}});
+ liq.appendChild(el);liq.appendChild(cap);m.forEach(o=>o.t.style.visibility='hidden');
+ combo={el,cap,tiles:m.map(o=>o.t)};el.onclick=clearCombo;el.getBoundingClientRect();
+ const D=RM?.01:1,N=pz.length*.04;
+ pz.forEach(({n,a},i)=>{n.style.transition=`transform ${.7*D}s cubic-bezier(.3,.7,.3,1) ${i*.04*D}s`;n.style.transform=`translate(0,${a?42:0}px)`});
+ ct.push(setTimeout(()=>pz.forEach(({n})=>{n.style.transition=`transform ${.45*D}s cubic-bezier(.34,1.5,.5,1)`;n.style.transform='translate(0,0)'}),(.7+N)*1000*D+60));
+ ct.push(setTimeout(()=>{el.classList.add('snap');cap.classList.add('on');burst('255,225,110',1);splash()},(1.2+N)*1000*D+60));
+ return true}
+G('go').onclick=()=>{synth();const ok=G('res').querySelector('.res.ok');if(ok){if(!combine())burst('255,225,110',1)}else{const z=G('zone');z.classList.add('shake');setTimeout(()=>z.classList.remove('shake'),800)}};
+let last=0;function loop(t){requestAnimationFrame(loop);if(t-last<(RM?250:66))return;last=t;bgFrame(t);if(liq.offsetParent){potFrame(t);fireFrame(t);steamFrame()}}
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(scene,150)});
+scene();requestAnimationFrame(loop);
+})();
+</script></body></html>
